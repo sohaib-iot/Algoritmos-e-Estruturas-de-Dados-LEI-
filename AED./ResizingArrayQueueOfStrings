@@ -1,0 +1,90 @@
+public class ResizingArrayQueueOfStrings {
+    private String[] queue;
+    private int first;
+    private int last;
+
+    public ResizingArrayQueueOfStrings(int capacity) {
+        queue = new String[capacity];
+        first = -1;
+        last = -1;
+    }
+
+    private void resize() {
+        int newSize = queue.length * 2;
+        String[] newArray = new String[newSize];
+        for (int i = 0; i < queue.length; i++) {
+            newArray[i] = queue[i];
+        }
+        queue = newArray;
+    }
+
+    private int next(int index) {
+        return (index + 1) % queue.length;
+    }
+
+    public void enqueue(String item) {
+        if (next(last) == first) {
+            resize();
+        }
+        if (first == -1) {
+            first = 0;
+        }
+        last = next(last);
+        queue[last] = item;
+        if (first == -1) {
+            first = 0;
+        }
+    }
+
+    public String dequeue() {
+        if (isEmpty()) {
+            throw new IllegalStateException("queue cheia");
+        }
+        String item = queue[first];
+        queue[first] = null;
+        if (first == last) {
+            first = -1;
+            last = -1;
+        } else {
+            first = next(first);
+        }
+        return item;
+    }
+
+    public int size() {
+        if (isEmpty()) {
+            return 0;
+        }
+        if (first <= last) {
+            return last - first + 1;
+        } else {
+            return queue.length - first + last + 1;
+        }
+    }
+
+    public boolean isEmpty() {
+        return first == -1;
+    }
+
+    public void shift() {
+        if (isEmpty()) {
+            throw new IllegalStateException("queue vazia");
+        }
+        String lastItem = queue[last];
+        for (int i = last; i > first; i--) {
+            queue[i] = queue[i - 1];
+        }
+        queue[first] = lastItem;
+    }
+
+    public static void main(String[] args) {
+        // Exemplo de uso da classe ResizingArrayQueueOfStrings
+        ResizingArrayQueueOfStrings queue = new ResizingArrayQueueOfStrings(5);
+        queue.enqueue("A");
+        queue.enqueue("B");
+        queue.enqueue("C");
+        System.out.println("Tamanho da fila: " + queue.size());
+        System.out.println("Removendo o primeiro elemento: " + queue.dequeue());
+        System.out.println("Tamanho da fila ap�s remo��o: " + queue.size());
+    }
+}
