@@ -1,0 +1,83 @@
+package semana4;
+
+import java.util.Iterator;
+
+public class ResizingArrayStack<T> implements Iterable<T>{
+
+    private T[] stack;
+    private int N;
+
+    public ResizingArrayStack()
+    {
+        stack = (T[])(new Object[1]);   // the ugly cast
+        N = 0;
+    }
+
+    public void resize(int newSize)
+    {
+        T[] newStack = (T[])new Object[newSize];
+
+        for(int i = 0; i < stack.length; i++)
+            newStack[i] = stack[i];
+
+        stack = newStack;
+    }
+
+    public void push(T item)
+    {
+        if(N == stack.length)
+            resize(2*stack.length);
+
+        stack[N++] = item;
+    }
+
+    public T pop()
+    {
+        if ( N == 0 )
+            throw new IllegalStateException("Stack is empty");
+
+        T item = stack[--N];
+        stack[N] = null;
+
+        if(N>0 && N == stack.length/4)
+            resize(stack.length/2);
+
+        return item;
+    }
+
+    public static void main(String[] args)
+    {
+        ResizingArrayStack<String> stack = new ResizingArrayStack<String>();
+        stack.push("A");
+        stack.push("B");
+
+        //  System.out.println(stack.pop());
+        //  System.out.println(stack.pop());
+
+        //  ciclo for-each
+        for(String s: stack)
+            System.out.println(s);
+    }
+
+    @Override
+    public Iterator<T> iterator()
+    {
+        return new StackIterator();
+    }
+
+    //Nested Class
+    private class StackIterator implements Iterator<T>
+    {
+        private int i = N;
+        @Override public boolean hasNext()
+        {
+            return i > 0;
+        }
+
+        @Override
+        public T next()
+        {
+            return stack[--i];
+        }
+    }
+}
