@@ -1,0 +1,54 @@
+import java.util.*;
+
+public class ST<Key extends Comparable<Key>, Value> {
+    private Node root; // Referência para a raiz da árvore
+
+    // Classe interna para representar os nós da árvore
+    private class Node {
+        private Key key;
+        private Value value;
+        private Node left, right;
+
+        public Node(Key key, Value value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+
+    // Construtor
+    public ST() {
+        // Implemente o construtor conforme necessário
+    }
+
+    // Método para inserir um par chave-valor na tabela
+    public void put(Key key, Value val) {
+        root = put(root, key, val);
+    }
+
+    // Método auxiliar para inserir um par chave-valor em um nó específico
+    private Node put(Node x, Key key, Value val) {
+        if (x == null) return new Node(key, val);
+        int cmp = key.compareTo(x.key);
+        if (cmp < 0) x.left = put(x.left, key, val);
+        else if (cmp > 0) x.right = put(x.right, key, val);
+        else x.value = val;
+        return x;
+    }
+
+    // Método para buscar o valor associado a uma chave
+    public Value get(Key key) {
+        return get(root, key);
+    }
+
+    // Método auxiliar para buscar o valor associado a uma chave em um nó específico
+    private Value get(Node x, Key key) {
+        if (x == null) return null;
+        int cmp = key.compareTo(x.key);
+        if (cmp < 0) return get(x.left, key);
+        else if (cmp > 0) return get(x.right, key);
+        else return x.value;
+    }
+
+    // Implemente os demais métodos conforme o enunciado
+    // ...
+}
